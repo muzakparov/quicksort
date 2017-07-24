@@ -3,10 +3,17 @@ $("#btReset").click(function() {
     reset();
 });
 
-$("#btBubble").click(function() {
+$("#btStart").click(function() {
     $(".button").addClass("disable");
     if (!resetted) reset();
-    bubble.sort(data);
+    //bubble.sort(data);   
+    setTimeout(function() {
+
+        bubble.sort(data);
+    }, 0);
+    quick.sort(data);
+
+
 });
 
 $("#btQuick").click(function() {
@@ -21,7 +28,7 @@ var resetted = false;
 
 // Generate array of rundom number and reset panel
 function reset() {
-    data = [10, 20, 30, 50, 70, 90, 100, 110, 120, 130, 140, 150, 160];
+    data = [0, 3, 6, 9, 12, 16, 19, 22, 25, 28, 32, 35, 38, 41, 44, 48, 51, 54, 57, 60, 64, 67, 70, 73, 76, 80, 83, 86, 89, 92, 96, 99, 102];
     for (i = data.length - 1; i >= 0; --i) {
         var ridx = ~~(Math.random() * (data.length));
         data.swap(i, ridx);
@@ -33,10 +40,10 @@ function reset() {
     var trA = $("<tr></tr>");
     var trB = $("<tr></tr>");
     for (i = 0; i < data.length; ++i) {
-        var trAppendedA = trA.append("<td  id='b" + i + "'>" +
+        var trAppendedA = trA.append("<td  id='a" + i + "'>" +
             "<div class='cc' style='height: " + data[i] + "px;'>" +
             "</div></td>");
-        var trAppendedB = trB.append("<td  id='c" + i + "'>" +
+        var trAppendedB = trB.append("<td  id='b" + i + "'>" +
             "<div class='cc' style='height: " + data[i] + "px;'>" +
             "</div></td>");
     }
@@ -57,23 +64,23 @@ var wrapFunction = function(fn, context, params) {
 
 var funqueue = [];
 
-function swapS(a, b) {
-    var ca = $("#b" + a).children("div");
-    var cb = $("#b" + b).children("div");
+function swapS(a, b, id) {
+    var ca = $("#" + id + a).children("div");
+    var cb = $("#" + id + b).children("div");
     ca.removeClass("cc").addClass("ccH1");
     cb.removeClass("cc").addClass("ccH2");
 }
 
-function swapP(a, b) {
-    var ca = $("#b" + a).children("div");
-    var cb = $("#b" + b).children("div");
-    $("#b" + a).empty().append(cb);
-    $("#b" + b).empty().append(ca);
+function swapP(a, b, id) {
+    var ca = $("#" + id + a).children("div");
+    var cb = $("#" + id + b).children("div");
+    $("#" + id + a).empty().append(cb);
+    $("#" + id + b).empty().append(ca);
 }
 
-function swapU(a, b) {
-    var ca = $("#b" + a).children("div");
-    var cb = $("#b" + b).children("div");
+function swapU(a, b, id) {
+    var ca = $("#" + id + a).children("div");
+    var cb = $("#" + id + b).children("div");
     ca.removeClass("ccH2").addClass("cc");
     cb.removeClass("ccH1").addClass("cc");
 }
@@ -93,10 +100,10 @@ function moveP(a, b) {
     $("#b" + b).empty().append(ca);
 }
 
-function pushSwap(a, b) {
-    var fun1 = wrapFunction(swapS, this, [a, b]);
-    var fun2 = wrapFunction(swapP, this, [a, b]);
-    var fun3 = wrapFunction(swapU, this, [a, b]);
+function pushSwap(a, b, id) {
+    var fun1 = wrapFunction(swapS, this, [a, b, id]);
+    var fun2 = wrapFunction(swapP, this, [a, b, id]);
+    var fun3 = wrapFunction(swapU, this, [a, b, id]);
     funqueue.push(fun1);
     funqueue.push(fun2);
     funqueue.push(fun3);
@@ -129,8 +136,8 @@ Array.prototype.swap = function(a, b) {
 //
 // Array extension for values swapping with display
 //
-Array.prototype.swapVerbose = function(a, b) {
-    pushSwap(a, b);
+Array.prototype.swapVerbose = function(a, b, id) {
+    pushSwap(a, b, id);
     this.swap(a, b);
 }
 
@@ -144,7 +151,7 @@ var bubble = {
         this.a = arr.slice();;
         for (i = this.a.length; i > 0; i--) {
             if (this.a[i] < this.a[i - 1]) {
-                this.a.swapVerbose(i - 1, i);
+                this.a.swapVerbose(i - 1, i, "a");
                 i = this.a.length;
             }
         }
@@ -173,7 +180,7 @@ var quick = {
             while (this.a[j] > v) j--;
             while (this.a[i] < v) i++;
             if (i < j) {
-                this.a.swapVerbose(i, j);
+                this.a.swapVerbose(i, j, "b");
                 i++;
                 j--;
             } else {
